@@ -8,16 +8,14 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"time"
 )
 
-func RequestTo(db *sql.DB, website *models.WebsiteModel) {
+func RequestTo(db *sql.DB, website *models.WebsiteModel) (bool, error) {
 	var status string
-	d := time.Now()
 	res, err := http.Get(website.URL)
 	if err != nil {
 		log.Fatal(err)
-		return
+		return false, err
 	}
 	// Always close the response body to close leaks.
 	defer res.Body.Close()
@@ -31,15 +29,16 @@ func RequestTo(db *sql.DB, website *models.WebsiteModel) {
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
-		return
+		return false, err
 	}
-	duration := time.Since(d)
-	fmt.Println(duration / time.Second)
-	fmt.Println(string(body))
+	// duration := time.Since(d)
+	// fmt.Println(duration / time.Second)
+
 	new, err := repository.CreateStatusMonitor(db, int(website.ID), status)
 	if err != nil {
-		log.Fatal(err)
-		return
+		log.Fatal(err, body)
+		return false, err
 	}
 	fmt.Println("Added the status monitor for ", new.WebsiteID)
+	return true, nil
 }

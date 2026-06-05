@@ -2,7 +2,7 @@ package add
 
 import (
 	// "Uptique/internal/app/common"
-	"Uptique/internal/common"
+
 	"Uptique/internal/database"
 	"Uptique/internal/database/repository"
 	"bufio"
@@ -66,7 +66,7 @@ func Website(url string) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	common.RequestTo(db, newWebsite)
+	// common.RequestTo(db, newWebsite)
 
 	// RequestTo(website.URL)
 	// repository.CreateStatusMonitor(db, 1, )
